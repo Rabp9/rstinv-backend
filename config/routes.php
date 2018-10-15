@@ -75,5 +75,12 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
-    $routes->fallbacks(DashedRoute::class);
+    $routes->fallbacks('DashedRoute');
 });
+
+Router::scope('/', function ($routes) {
+    $routes->extensions(['json']);
+    
+    $routes->resources('Cruces');
+});
+Plugin::routes();

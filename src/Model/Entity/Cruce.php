@@ -31,14 +31,6 @@ class Cruce extends Entity
      * @var array
      */
     protected $_accessible = [
-        'codigoCruce' => true,
-        'codigoPunto' => true,
-        'suministro' => true,
-        'descripcion' => true,
-        'detalle_antenas' => true,
-        'detalle_postes' => true,
-        'detalle_semaforos' => true,
-        'detalle_switches' => true,
-        'reguladores' => true
+        '*' => true
     ];
 }

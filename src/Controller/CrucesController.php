@@ -45,19 +45,21 @@ class CrucesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
-        $cruce = $this->Cruces->newEntity();
+    public function add() {
         if ($this->request->is('post')) {
-            $cruce = $this->Cruces->patchEntity($cruce, $this->request->getData());
+            $cruce = $this->Cruces->newEntity($this->request->getData());
+            
             if ($this->Cruces->save($cruce)) {
-                $this->Flash->success(__('The cruce has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                $code = 200;
+                $message = 'El cruce fue guardado correctamente';
+            } else {
+                $errors = $cruce->errors();
+                $code = 500;
+                $message = 'El cruce no fue guardado correctamente';
             }
-            $this->Flash->error(__('The cruce could not be saved. Please, try again.'));
         }
-        $this->set(compact('cruce'));
+        $this->set(compact('cruce', 'message', 'code', 'errors'));
+        $this->set('_serialize', ['cruce', 'message', 'code', 'errors']);
     }
 
     /**

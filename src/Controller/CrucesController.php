@@ -18,7 +18,7 @@ class CrucesController extends AppController
      * @return \Cake\Http\Response|void
      */
     public function index() {
-        $cruces = $this->Cruces->find();
+        $cruces = $this->Cruces->find()->where(['estado_id' => 1]);
 
         $this->set(compact('cruces'));
         $this->set('_serialize', ['cruces']);

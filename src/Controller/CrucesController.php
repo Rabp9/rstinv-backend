@@ -22,6 +22,29 @@ class CrucesController extends AppController
 
         $this->set(compact('cruces'));
         $this->set('_serialize', ['cruces']);
+
+        $estado_id = $this->request->getQuery('estado_id');
+        $items_per_page = $this->request->getQuery('items_per_page');
+        
+        $this->paginate = [
+            'limit' => $items_per_page
+        ];
+        
+        $query = $this->Cruces->find();
+        if ($estado_id) {
+            $query->where(['cruces.estado_id' => $estado_id]);
+        }
+        
+        $count = $query->count();
+        $cruces = $this->paginate($query);
+        $paginate = $this->request->getParam('paging')['Cruces'];
+        $pagination = [
+            'totalItems' => $paginate['count'],
+            'itemsPerPage' =>  $paginate['perPage']
+        ];
+        
+        $this->set(compact('cruces', 'pagination', 'count'));
+        $this->set('_serialize', ['cruces', 'pagination', 'count']);
     }
 
     /**
@@ -104,5 +127,34 @@ class CrucesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function search($texto = null) {
+        $texto = $this->request->getParam('texto');
+        $cruce = $this->Cruces->find()
+            ->contain(['Cruces'])
+            ->where(['OR' => [
+                'cruces.codigoCruce' => $texto,
+                'cruces.descripcion' => $texto
+            ]])
+            ->first();
+        
+        $this->set(compact('cruce'));
+        $this->set('_serialize', ['cruce']);
+    }
+    
+    public function searchMany($search = null) {
+        $servicio = $this->request->getParam('search');
+        $servicios = $this->Servicios->find()
+            ->where([
+                'OR' => [
+                    'cruces.codigoCruce LIKE' => '%' . $servicio . '%',
+                    'cruces.descripcion LIKE' => '%' . $servicio . '%'
+                ],
+                'cruces.estado_id' => 1
+            ]);
+        
+        $this->set(compact('cruces'));
+        $this->set('_serialize', ['cruces']);
     }
 }
